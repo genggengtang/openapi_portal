@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.LoginMapper">
+<!--mybatis ehcache缓存配置 <cache>标签二选一,第一个可以输出日志
+<cache type="org.mybatis.caches.ehcache.LoggingEhcache" /> -->
+	
+	<resultMap id="userAuthDetails" type="com.model.UserAuthDetails">
+	   <result column="additional_information" property="additional_information" jdbcType="VARCHAR" />
+	   <result column="authorities" property="authorities" jdbcType="VARCHAR" />  
+	</resultMap>
+	<resultMap id="imageData" type="com.model.ImageData">
+	   <result column="picUrl" property="picUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	
+
+
+	<select id="loadByUsername" resultType="com.model.User"
+		parameterType="java.lang.String">
+		select * from t_user where username=#{username}
+	</select>
+	
+	<select id="queryInterfaceByUser" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		select interfaces from oauth_client_interfaces 
+		 where client_id=#{username}
+	</select>
+	
+	<select id="queryUserAuthCount"  resultType="java.lang.Integer">
+		select count(*) from oauth_client_details	
+	</select>
+	<select id="queryUserAuth" parameterType="HashMap" resultMap="userAuthDetails">
+		select * from oauth_client_details	LIMIT #{offset},#{limit}
+	</select>
+	
+	<update id="updateUserAuth" parameterType="com.model.UserAuthDetails">
+	   update   oauth_client_details set authorities=#{authorities} where additional_information=#{additional_information}	
+	</update>
+	
+	<update id="updateInterfaces" parameterType="com.model.UserInterface">
+	   update   oauth_client_interfaces set interfaces=#{interfaces} where client_id=#{client_id}	
+	</update>
+	
+	<insert id="addUserAuth" parameterType="com.model.UserAuthDetails">
+	  insert into oauth_client_details(client_id,client_secret,authorized_grant_types,authorities,additional_information)
+	   values (#{clientID,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},"client_credentials",#{authorities,jdbcType=VARCHAR},
+	   #{additional_information,jdbcType=VARCHAR})
+	</insert>	
+	<insert id="addInterfaces" parameterType="com.model.UserInterface">
+	  insert into oauth_client_interfaces(client_id,interfaces) values(#{client_id,jdbcType=VARCHAR},
+	  #{interfaces,jdbcType=VARCHAR})	
+	</insert>	
+	<select id="getImageData"  parameterType="HashMap" resultMap="imageData">
+		select  * from passenge_data where hllShopId=#{hllShopId} and age &gt;=#{minAge} and age &lt;=#{maxAge} and gender=#{gender} 
+		and date_format(appearTime,'%Y-%m-%d') =date_format(#{date},'%Y-%m-%d')	LIMIT #{offset},#{limit}
+	</select>	
+	<select id="queryImageDataCount"  parameterType="HashMap" resultType="java.lang.Integer">
+		select count(*) from passenge_data	where hllShopId=#{hllShopId} and age &gt;=#{minAge} and age &lt;=#{maxAge} and gender=#{gender} 
+		and date_format(appearTime,'%Y-%m-%d') =date_format(#{date},'%Y-%m-%d')
+	</select>
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.multipart.maxSize" value="9000000" />
+	<package name="app" extends="struts-default">
+
+		<!-- 用户输入用户名密码登录 -->
+		<action name="LoginAction" class="action.LoginAction" method="loginUser">
+			<result name="loginOk" type="dispatcher">/login2.jsp</result>
+
+			<result name="loginError" type="dispatcher">/loginError.jsp</result>
+			<result name="input" type="dispatcher">/input.jsp</result>
+		</action>
+	</package>
+
+	<package name="appJiangbian" extends="struts-default">
+		<interceptors>
+			<!-- 自定义拦截器栈 -->
+			<interceptor-stack name="mystack">
+				<interceptor-ref name="token"></interceptor-ref>
+				<!-- 引入系统默认的拦截器 -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 用户输入用户名密码登录 -->
+		<action name="JiangbianLoginAction" class="action.LoginAction" method="JiangBianLogin">
+			<result name="loginOk" type="dispatcher">/jiangbian/fileUpLoad.jsp</result>
+
+			<result name="loginError" type="dispatcher">/jiangbian/login.jsp</result>
+			<result name="input" type="dispatcher">/jiangbian/login.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	<package name="appDianpu" extends="struts-default">
+		<interceptors>
+			<!-- 自定义拦截器栈 -->
+			<interceptor-stack name="mystack">
+				<interceptor-ref name="token"></interceptor-ref>
+				<!-- 引入系统默认的拦截器 -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 用户输入用户名密码登录 -->
+		<action name="DianpuLoginAction" class="action.DianpuLoginAction" method="loginDianpu">
+			<result name="loginOk" type="redirect">
+				http://open.mmyeah.com/Oauth2/authorize?client_id=jxb20170912&amp;response_type=code&amp;redirect_uri=http://localhost:8080/openapi_portal/showData1.jsp&amp;state=hello
+                            </result>
+
+			<result name="loginError" type="dispatcher">/loginError.jsp</result>
+			<result name="input" type="dispatcher">/input.jsp</result>
+		</action>
+
+		<!-- 文件上传 -->
+		<action name="FileUploadAction" class="action.FileUploadAction">
+			<!-- 引用拦截器栈 -->
+			<interceptor-ref name="mystack"></interceptor-ref>
+			<result name="invalid.token">/jiangbian/fileUpLoad.jsp</result>
+			<result name="success" type="dispatcher">/jiangbian/fileUpLoad.jsp</result>
+			<result name="fail" type="dispatcher">/jiangbian/fileUpLoad.jsp</result>
+		</action>
+		<!-- 用户输入用户名密码登录 -->
+		<action name="GetShopInfoAction" class="action.GetShopInfo" method="getShops">
+			<result name="loginOk" type="dispatcher">/getAccessToken.jsp</result>
+
+			<result name="loginError" type="dispatcher">/loginError.jsp</result>
+			<result name="input" type="dispatcher">/input.jsp</result>
+		</action>
+		
+		
+		<!-- 用户输入用户名密码登录 -->
+		<action name="AuthAction" class="action.AuthAction" method="login">
+			<result name="loginOk" type="dispatcher">/shopInfo.jsp</result>
+
+			<result name="loginError" type="dispatcher">/loginError.jsp</result>
+			<result name="input" type="dispatcher">/input.jsp</result>
+		</action>
+		
+	</package>
+
+	<package name="appTest" namespace="/test" extends="struts-default">
+		<result-types>
+			<result-type name="json" class="org.apache.struts2.json.JSONResult" />
+		</result-types>
+		<interceptors>
+			<interceptor name="json"
+				class="org.apache.struts2.json.JSONInterceptor" />
+		</interceptors>
+		<action name="Action1" class="action.QueryUserAuth" method="executeAjax">
+			<result type="json">
+				<param name="root">responseJson</param>
+			</result>
+		</action>
+		
+		<action name="updateQueryAuth" class="action.UpdateUserAuth" method="execute">
+			<result type="json">
+				
+			</result>
+		</action>
+		<action name="addAuth" class="action.AddUserAuth" method="execute">
+			<result type="json">
+				
+			</result>
+		</action>
+		
+		<action name="queryImageData" class="action.QueryImageData" method="execute">
+			<result type="json">
+				<param name="root">responseJson</param>
+			</result>
+		</action>
+
+		<action name="queryImageDataForAll" class="action.QueryImageDataForAll" method="execute">
+			<result type="json">
+				<param name="root">responseJson</param>
+			</result>
+		</action>
+		
+	</package>
+
+	<package name="appSpw" extends="struts-default">
+		<!-- 用户输入用户名密码登录 -->
+		<action name="SpwLoginAction" class="action.LoginAction" method="SpwLogin">
+			<result name="loginOk" type="dispatcher">/spw/success.jsp</result>
+
+			<result name="loginError" type="dispatcher">/spw/login.jsp</result>
+			<result name="input" type="dispatcher">/spw/login.jsp</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.LoginDianpuMapper">
+<!--mybatis ehcache缓存配置 <cache>标签二选一,第一个可以输出日志
+<cache type="org.mybatis.caches.ehcache.LoggingEhcache" /> -->
+	
+	
+	<resultMap id="jituanUser" type="com.model.JituanUser">
+	   <result column="groupLoginName" property="groupLoginName" jdbcType="VARCHAR" />
+	   <result column="groupLoginPWD" property="groupLoginPWD" jdbcType="VARCHAR" />  
+	</resultMap>
+	
+	<resultMap id="dianpuUser" type="com.model.DianpuUser">
+	   <result column="loginName" property="loginName" jdbcType="VARCHAR" />
+	   <result column="loginPWD" property="loginPWD" jdbcType="VARCHAR" />  
+	</resultMap>
+	<resultMap id="accountInfo" type="com.model.AccountInfo">
+	   <result column="accountID" property="accountID" jdbcType="INTEGER" />
+	   <result column="groupID" property="groupID" jdbcType="INTEGER" />  
+	</resultMap>
+
+
+	
+	
+	<select id="loadByDianpuUsername" resultMap="dianpuUser"
+		parameterType="java.lang.String">
+		select  		
+  			a.loginName AS loginName,
+  			loginPWD AS loginPWD		
+		from tbl_shop_group_child_account a join tbl_shop_group_info g ON a.groupID=g.groupID
+        WHERE	
+        accountStatus = 0
+        AND	 	
+		a.loginName=#{username}		
+		AND
+  		a.action IN ( 0 , 1 )						
+	</select>
+	
+	
+	<select id="getAccountInfo" resultMap="accountInfo"
+		parameterType="java.lang.String">
+		select  
+		    *
+		from tbl_shop_group_child_account 
+        WHERE		 	
+		loginName=#{username}		
+		AND
+			action IN (0 , 1)
+	</select>
+	
+	
+	<select id="getShopID" 
+		 parameterType="HashMap" resultType="java.lang.String">
+		select  
+		    group_concat(shopID) 
+		from  tbl_shop_group_child_account_data_right
+        WHERE		 	
+		accountID = ${accountID} AND groupID = ${groupID} and shopID != 0
+
+	</select>
+	
+	
+	<select id="getShopName" 
+		 parameterType="HashMap" resultType="java.lang.String">
+		select  
+		    shopName
+		from  tbl_shop_base_info
+        WHERE		 	
+		shopID=${shopID}
+
+	</select>
+	
+	
+</mapper>

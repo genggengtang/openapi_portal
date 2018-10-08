@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+         http://www.springframework.org/schema/tx 
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://mybatis.org/schema/mybatis-spring
+         http://mybatis.org/schema/mybatis-spring.xsd">
+     
+     
+	<!-- 打开Spring的Annotation支持 -->
+	<context:annotation-config />
+	<!-- 设定Spring 去哪些包中找Annotation -->
+	  <context:component-scan base-package="com" />
+
+	
+		<!-- 1、数据源：DriverManagerDataSource -->
+	<!-- <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	
+	<bean id="userService" class="com.service.UserService">
+	</bean> -->
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="url" value="jdbc:mysql://dohko.mysql.001.master.hualala.com:3306/db_shop?autoReconnect=true&amp;autoReconnectForPools=true&amp;failOverReadOnly=false"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="hualaladev"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>	   
+	</bean>
+	<bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="url" value="jdbc:mysql://mu.mysql.001.master.hualala.com:3306/db_openapi?autoReconnect=true&amp;autoReconnectForPools=true&amp;failOverReadOnly=false"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="gozapdev"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>	   
+	</bean>
+
+	<!-- 2、mybatis的SqlSession的工厂：SqlSessionFactoryBean dataSource:引用数据源 typeAliasesPackage:指定实体类的包名，自动将实体的简单类名映射成别名--> 
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:Mybatis-config.xml"></property>
+	</bean>
+	
+	<!-- 2、mybatis的SqlSession的工厂：SqlSessionFactoryBean dataSource:引用数据源 typeAliasesPackage:指定实体类的包名，自动将实体的简单类名映射成别名--> 
+	<bean id="sqlSessionFactory1" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource1"></property>
+		<property name="configLocation" value="classpath:Mybatis-config.xml"></property>
+	</bean>
+	
+	
+
+    <!-- 导入资源文件 -->
+    <import resource="classpath:com/service/business-admin.xml"></import>
+    
+	<!-- 4、事务管理：DataSourceTransactionManager -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 5、使用声明式事务 transaction-manager:引用上面定义的事务管理器驱动 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<context:property-placeholder location="classpath:redis.properties"/>  
+	
+	 <!-- jedis pool配置 -->  
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+            <!--最大连接数-->  
+        <property name="maxTotal" value="${redis.maxTotal}" />  
+            <!--最大空闲连接数-->  
+        <property name="maxIdle" value="${redis.maxIdle}" />  
+            <!--初始化连接数-->  
+        <property name="minIdle" value="${redis.minIdle}"/>  
+            <!--最大等待时间-->  
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />  
+            <!--对拿到的connection进行validateObject校验-->  
+        <property name="testOnBorrow" value="true" />
+            <!--在进行returnObject对返回的connection进行validateObject校验-->  
+        <property name="testOnReturn" value="true"/>
+            <!--定时对线程池中空闲的链接进行validateObject校验-->  
+        <property name="testWhileIdle" value="true" />  
+    </bean>  
+   
+      
+    <!-- 生产环境配置 -->  
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">  
+        <constructor-arg index="0" ref="jedisPoolConfig"/>  
+        <constructor-arg index="1" value="127.0.0.1"/>  
+        <constructor-arg index="2" value="6379"/>  
+        <constructor-arg index="3" value="100000"/>  
+        <constructor-arg index="4">  
+            <null></null>  
+        </constructor-arg>  
+        <constructor-arg index="5" value="0"/>  
+    </bean>  
+  
+    <bean id="redisService" class="com.service.RedisService" />  
+	
+</beans>

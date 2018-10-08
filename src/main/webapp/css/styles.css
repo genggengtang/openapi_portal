@@ -1,0 +1,162 @@
+
+/*basic reset*/
+* {margin: 0; padding: 0;}
+
+html {
+	height: 100%;
+	/*Image only BG fallback*/
+	
+	/*background = gradient + image pattern combo*/
+	background:#f5f5f5;
+		/*linear-gradient(rgba(196, 102, 0, 0.2), rgba(155, 89, 182, 0.2)), */
+	/*	url('../img/gs.png');*/
+}
+
+body {
+	font-family: "Microsoft YaHei",montserrat, arial, verdana;
+}
+/*form styles*/
+
+.login-top {
+	background:#858584;
+	text-align: center;
+	height:290px
+}
+.login-top h1 {
+	font-size:48px;
+	color:#f3f3f1;
+}
+.login-top p {
+	color:#b0b0b0
+}
+.htmleaf-content h2 {
+	margin-top:40px;
+	text-align:center;
+	color:#333
+}
+.form-control.logins {
+	padding-left:40px;
+	height:40px;
+}
+.form-control.logins::-moz-placeholder{
+	color:#999
+}
+#msform {
+	
+	margin: 50px auto;
+	text-align: center;
+	position: relative;
+}
+#msform fieldset {
+	background: white;
+	border: 0 none;
+	border-radius: 3px;
+	padding: 20px 30px;
+	box-sizing: border-box;
+	
+	margin:auto;
+}
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+	display: none;
+}
+#msform .gly {
+	top:0;left:0;
+	color:#ccc;
+	width:45px;
+	display: block;
+	line-height:40px
+	
+}
+.lab-left {
+	display: block;
+	float:left;
+	
+}
+.lab-right {
+	margin-left:25px;
+	float:left;
+	display: blcok;
+}
+/*buttons*/
+#msform .action-button {
+	width: 290px;
+	background: #fd9051;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 4px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 0px;
+}
+#msform .action-button:hover, #msform .action-button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+/*headings*/
+.fs-title {
+	font-size: 15px;
+	text-transform: uppercase;
+	color: #2C3E50;
+	margin-bottom: 10px;
+}
+.fs-subtitle {
+	font-weight: normal;
+	font-size: 13px;
+	color: #666;
+	margin-bottom: 20px;
+}
+/*progressbar*/
+#progressbar {
+	margin-bottom: 30px;
+	overflow: hidden;
+	/*CSS counters to number the steps*/
+	counter-reset: step;
+	width:400px;
+	margin: auto;
+}
+#progressbar li {
+	list-style-type: none;
+	color: #d0d0d0;
+	text-transform: uppercase;
+	font-size: 12px;
+	width: 33.33%;
+	float: left;
+	position: relative;
+}
+#progressbar li:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 30px;
+	line-height: 30px;
+	display: block;
+	font-size: 14px;
+	color: #b9b9b9;
+	border:1px solid #c5c5c5;
+	background: white;
+	border-radius: 50%;
+	margin: 0 auto 15px auto;
+	z-index:1
+}
+
+/*progressbar connectors*/
+#progressbar li:after {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: #c5c5c5;
+	position: absolute;
+	left: -50%;
+	top: 13px;
+	z-index: -1; /*put it behind the numbers*/
+}
+#progressbar li:first-child:after {
+	/*connector not needed before the first step*/
+	content: none; 
+}
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar li.active:before,  #progressbar li.active:after{
+	background: #27AE60;
+	color: white;
+}
